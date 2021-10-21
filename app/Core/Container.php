@@ -15,11 +15,14 @@ class Container implements ContainerInterface
     public function get($id)
     {
 
-
         if ($this->has($id)) {
             $entry = $this->entries[$id];
 
-            return $entry($this);
+            if (is_callable($entry)){
+                return $entry();
+            }
+            $id = $entry;
+
         }
 
 
@@ -28,7 +31,7 @@ class Container implements ContainerInterface
 
 
 
-    public function set(string $id, callable $concrete)
+    public function set(string $id,  $concrete)
     {
         $this->entries[$id] = $concrete;
     }
@@ -49,8 +52,6 @@ class Container implements ContainerInterface
         // 2. Inspect the constructor of the class
         $constructor = $reflectionClass->getConstructor();
 
-
-
         if (! $constructor) {
             return new $id;
         }
@@ -63,6 +64,8 @@ class Container implements ContainerInterface
         if (! $parameters) {
             return new $id;
         }
+
+
 
         // 4. If the constructor parameter is a class then try to resolve that class using the container
         $dependencies = array_map(
@@ -81,6 +84,7 @@ class Container implements ContainerInterface
                         'Failed to resolve class "' . $id . '" because of union type for param "' . $name . '"'
                     );
                 }
+
 
                 if ($type instanceof \ReflectionNamedType && ! $type->isBuiltin()) {
 

@@ -1,33 +1,22 @@
 <?php
 
 
-
 namespace App\Services;
 
 class InvoiceService
 {
-    public function __construct(
-         SalesTaxService $salesTaxService,
-         PaymentGatewayService $gatewayService,
-         EmailService $emailService
-    ) {
+
+    public $gateway;
+
+    public function __construct(PaymentGatewayInterface $gatewayService)
+    {
+
+        $this->gateway = $gatewayService;
+
     }
 
-    public function process(array $customer, float $amount)
+    public function process()
     {
-        // 1. calculate sales tax
-        $tax = $this->salesTaxService->calculate($amount, $customer);
-
-        // 2. process invoice
-        if (! $this->gatewayService->charge($customer, $amount, $tax)) {
-            return false;
-        }
-
-        // 3. send receipt
-        $this->emailService->send($customer, 'receipt');
-
-        echo 'Invoice has been processed<br />';
-
-        return true;
+        return $this->gateway->charge();
     }
 }

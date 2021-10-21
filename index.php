@@ -3,10 +3,15 @@
 require_once 'vendor\autoload.php';
 
 use App\Core\Container;
-use App\Services\EmailService;
+use App\Services\InvoiceService;
+use App\Services\PaymentGatewayInterface;
+use App\Services\StripeGateway;
 
 $container = new Container();
 
-$obj = $container->get(EmailService::class);
+$container->set(PaymentGatewayInterface::class,StripeGateway::class);
 
-echo $obj->send([],'');
+$obj = $container->get(InvoiceService::class);
+
+echo $obj->process();
+
