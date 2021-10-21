@@ -6,6 +6,7 @@ use App\Core\Container;
 use App\Services\InvoiceService;
 use App\Services\PaymentGatewayInterface;
 use App\Services\StripeGateway;
+use App\Services\PaypalGateway;
 
 $container = new Container();
 

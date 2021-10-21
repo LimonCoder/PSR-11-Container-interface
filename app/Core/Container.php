@@ -21,6 +21,7 @@ class Container implements ContainerInterface
             if (is_callable($entry)){
                 return $entry();
             }
+
             $id = $entry;
 
         }
